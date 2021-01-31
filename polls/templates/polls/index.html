@@ -1,0 +1,60 @@
+{% load i18n %}
+{% if latest_question_list %}
+<ul>
+{% for question in latest_question_list %}
+<li><a href="/polls/{{ question.id }}/">{{ question.question_text }}</a></li>
+   <h1>{{ question.question_text }}</h1>
+<ul>
+{% for choice in question.choice_set.all %}
+<li>{{ choice.choice_text }}</li>
+    <li><a href="{% url 'detail' question.id %}">{{ question.question_text }}</a></li>
+{% endfor %}
+</ul>
+{% endfor %}
+</ul>
+{% else %}
+<p>No polls are available.</p>
+{% endif %}
+<h1>{% translate "La Grande Boucle" as race %}</h1>
+<h1>{% trans 'hello in this translate IN HTML' %}</h1>
+
+<h2>{% trans 'hello people HTML' %}</h2>
+    <p>{% trans 'oh my good' %} </p>
+<p>{% trans 'papya man of the sie' %}</p>
+{% get_current_language as LANGUAGE_CODE %}
+ Current language: {{ LANGUAGE_CODE }}
+{% get_available_languages as LANGUAGES %}
+{% get_current_language_bidi as LANGUAGE_FR %}
+
+{% get_language_info for LANGUAGE_CODE as lang %}
+{% get_language_info for "fr" as lang %}
+Language code: {{ lang.code }}<br>
+Name of language: {{ lang.name_local }}<br>
+Name in English: {{ lang.name }}<br>
+Bi-directional: {{ lang.fr }}
+Name in the active language: {{ lang.name_translated }}
+
+{% blocktranslate trimmed %}
+<p>tag without having the indentation characters
+end up in the corresponding entry in the PO file, which makes the translation process easier</p>
+<p>supports is the trimmed option. This option will remove newline
+characters from the beginning and the end of the content of the</p>
+{% endblocktranslate %}
+{% get_language_info_list for available_languages as langs %}
+{% for lang in langs %} ... {% endfor %}
+
+<form action="{% url 'set_language' %}" method="post">{% csrf_token %}
+<input name="next" type="hidden" value="{{ redirect_to }}">
+<select name="language" style="background-color: #ba2121;width: 80px;height: 30px;">
+{% get_current_language as LANGUAGE_CODE %}
+{% get_available_languages as LANGUAGES %}
+{% get_language_info_list for LANGUAGES as languages %}
+{% for language in languages %}
+<option value="{{ language.code }}"{% if language.code == LANGUAGE_CODE %} selected {% endif %}>
+{{ language.name_local }} ({{ language.code }})
+</option>
+{% endfor %}
+</select>
+<input style="background-color: #34ce57;width: 80px;height: 30px;width: 80px" type="submit" value="Go">
+</form>
+
